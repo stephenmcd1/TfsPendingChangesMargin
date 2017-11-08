@@ -208,7 +208,7 @@ namespace AlekseyNagovitsyn.TfsPendingChangesMargin
             _scrollMap = scrollMapFactoryService.Create(textView);
 
             var dte = (DTE2)vsServiceProvider.GetService(typeof(DTE));
-            _tfExt = dte.GetObject(typeof(TeamFoundationServerExt).FullName);
+            _tfExt = dte.GetObject(typeof(TeamFoundationServerExt).FullName) as TeamFoundationServerExt;
             Debug.Assert(_tfExt != null, "_tfExt is null.");
             _tfExt.ProjectContextChanged += OnTfExtProjectContextChanged;
 
@@ -489,8 +489,7 @@ namespace AlekseyNagovitsyn.TfsPendingChangesMargin
 
                 _versionControlItemWatcherCts = new CancellationTokenSource();
                 CancellationToken token = _versionControlItemWatcherCts.Token;
-                _versionControlItemWatcher = new Task(ObserveVersionControlItem, token, token);
-                _versionControlItemWatcher.Start();
+                _versionControlItemWatcher = Task.Run(async () => await ObserveVersionControlItem(token), token);
             }
             else
             {
@@ -514,14 +513,27 @@ namespace AlekseyNagovitsyn.TfsPendingChangesMargin
         {
             var task = new Task(() =>
             {
-                lock (_drawLockObject)
-                {
-                    bool success = RefreshVersionControl();
-                    if (_isDisposed)
-                        return;
+                bool success = RefreshVersionControl();
+                if (_isDisposed)
+                    return;
 
-                    SetMarginActivated(success);
-                    Redraw(false, MarginDrawReason.InternalReason);
+                if (!success)
+                {
+                    lock (_drawLockObject)
+                    {
+                        _versionControl = null;
+                        _versionControlItem = null;
+                        SetMarginActivated(false);
+                        Redraw(false, MarginDrawReason.InternalReason);
+                    }
+                }
+                else
+                {
+                    lock (_drawLockObject)
+                    {
+                        _versionControlItem = null; // Reset as it belongs to the old versionControl
+                    }
+                    RefreshVersionControlItem(CancellationToken.None);
                 }
             });
 
@@ -548,71 +560,26 @@ namespace AlekseyNagovitsyn.TfsPendingChangesMargin
 
             TfsTeamProjectCollection tfsProjCollections = TfsTeamProjectCollectionFactory.GetTeamProjectCollection(new Uri(tfsServerUriString));
             _versionControl = (VersionControlServer)tfsProjCollections.GetService(typeof(VersionControlServer));
-            try
-            {
-                _versionControlItem = GetVersionControlItem();
-            }
-            catch (VersionControlItemNotFoundException)
-            {
-                _versionControlItem = null;
-                return false;
-            }
-            catch (TeamFoundationServiceUnavailableException)
-            {
-                _versionControlItem = null;
-                return false;
-            }
-
-            DownloadVersionControlItem();
             return true;
         }
 
         /// <summary>
         /// Observation over VersionControlItem up-dating at regular intervals.
         /// </summary>
-        /// <param name="cancellationTokenObject">A cancellation token for this method.</param>
-        private void ObserveVersionControlItem(object cancellationTokenObject)
+        /// <param name="cancellationToken">A cancellation token for this method.</param>
+        private async Task ObserveVersionControlItem(CancellationToken cancellationToken)
         {
-            var cancellationToken = (CancellationToken)cancellationTokenObject;
-
             while (true)
             {
                 try
                 {
                     const int VersionControlItemObservationInterval = 30000;
-                    System.Threading.Thread.Sleep(VersionControlItemObservationInterval);
-
+                    await Task.Delay(VersionControlItemObservationInterval, cancellationToken);
                     if (cancellationToken.IsCancellationRequested)
                         break;
 
-                    lock (_drawLockObject)
-                    {
-                        Item versionControlItem;
-                        try
-                        {
-                            versionControlItem = GetVersionControlItem();
-                        }
-                        catch (VersionControlItemNotFoundException)
-                        {
-                            SetMarginActivated(false);
-                            Redraw(false, MarginDrawReason.InternalReason);
-                            break;
-                        }
-                        catch (TeamFoundationServiceUnavailableException)
-                        {
-                            continue;
-                        }
-
-                        if (cancellationToken.IsCancellationRequested)
-                            break;
-
-                        if (_versionControlItem == null || versionControlItem.CheckinDate != _versionControlItem.CheckinDate)
-                        {
-                            _versionControlItem = versionControlItem;
-                            DownloadVersionControlItem();
-                            Redraw(false, MarginDrawReason.VersionControlItemChanged);
-                        }
-                    }
+                    if (!RefreshVersionControlItem(cancellationToken))
+                        break;
                 }
                 catch (Exception ex)
                 {
@@ -621,20 +588,71 @@ namespace AlekseyNagovitsyn.TfsPendingChangesMargin
             }
         }
 
+        private bool RefreshVersionControlItem(CancellationToken cancellationToken)
+        {
+            if (cancellationToken.IsCancellationRequested)
+                return false;
+
+            Item versionControlItem;
+
+            try
+            {
+                versionControlItem = GetVersionControlItem(_versionControl, _textDoc.FilePath);
+            }
+            catch (VersionControlItemNotFoundException)
+            {
+                if (cancellationToken.IsCancellationRequested)
+                    return false;
+
+                lock (_drawLockObject)
+                {
+                    SetMarginActivated(false);
+                    Redraw(false, MarginDrawReason.InternalReason);
+                }
+                return !cancellationToken.IsCancellationRequested;
+            }
+            catch (TeamFoundationServiceUnavailableException)
+            {
+                return !cancellationToken.IsCancellationRequested;
+            }
+
+            if (cancellationToken.IsCancellationRequested)
+                return false;
+
+            var currentVersionControlItem = _versionControlItem;
+            if (versionControlItem != null && (currentVersionControlItem == null || versionControlItem.CheckinDate != currentVersionControlItem.CheckinDate))
+            {
+                Stream versionControlItemStream = DownloadVersionControlItem(versionControlItem);
+                lock (_drawLockObject)
+                {
+                    if (_versionControlItem == null)
+                        SetMarginActivated(true);
+
+                    if (ReferenceEquals(currentVersionControlItem, _versionControlItem) || _versionControlItem == null)
+                    {
+                        _versionControlItem = versionControlItem;
+                        _versionControlItemStream = versionControlItemStream;
+                    }
+
+                    Redraw(false, MarginDrawReason.VersionControlItemChanged);
+                }
+            }
+
+            return true;
+        }
+
         /// <summary>
         /// Get version control item for current text document.
         /// </summary>
         /// <returns>Committed version of a file in the version control server.</returns>
         /// <exception cref="VersionControlItemNotFoundException">The document file is not linked to version control.</exception>
         /// <exception cref="TeamFoundationServiceUnavailableException">Team Foundation Service unavailable.</exception>
-        private Item GetVersionControlItem()
+        private static Item GetVersionControlItem(VersionControlServer versionControl, string itemPath)
         {
-            string itemPath = _textDoc.FilePath;
-
             Workspace workspace;
             try
             {
-                workspace = _versionControl.GetWorkspace(itemPath);
+                workspace = versionControl.GetWorkspace(itemPath);
             }
             catch (ItemNotMappedException ex)
             {
@@ -649,7 +667,7 @@ namespace AlekseyNagovitsyn.TfsPendingChangesMargin
             try
             {
                 // Be careful, VersionControlServer.GetItem is slow.
-                return _versionControl.GetItem(itemPath, VersionSpec.Latest);
+                return versionControl.GetItem(itemPath, VersionSpec.Latest);
             }
             catch (VersionControlException ex)
             {
@@ -661,18 +679,11 @@ namespace AlekseyNagovitsyn.TfsPendingChangesMargin
         /// <summary>
         /// Download version control item for current text document to stream.
         /// </summary>
-        private void DownloadVersionControlItem()
+        private static MemoryStream DownloadVersionControlItem(Item versionControlItem)
         {
-            if (_isDisposed)
-                return;
-
             var stream = new MemoryStream();
-            _versionControlItem.DownloadFile().CopyTo(stream);
-
-            if (_isDisposed)
-                return;
-
-            _versionControlItemStream = stream;
+            versionControlItem.DownloadFile().CopyTo(stream);
+            return stream;
         }
 
         /// <summary>
@@ -872,23 +883,7 @@ namespace AlekseyNagovitsyn.TfsPendingChangesMargin
             {
                 var task = new Task(() =>
                 {
-                    lock (_drawLockObject)
-                    {
-                        try
-                        {
-                            _versionControlItem = GetVersionControlItem();
-                            DownloadVersionControlItem();
-                            Redraw(false, MarginDrawReason.VersionControlItemChanged);
-                        }
-                        catch (VersionControlItemNotFoundException)
-                        {
-                            SetMarginActivated(false);
-                            Redraw(false, MarginDrawReason.InternalReason);
-                        }
-                        catch (TeamFoundationServiceUnavailableException)
-                        {
-                        }
-                    }
+                    RefreshVersionControlItem(CancellationToken.None);
                 });
 
                 task.Start();
