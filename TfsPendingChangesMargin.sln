@@ -1,20 +1,46 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsPendingChangesMargin", "Source\TfsPendingChangesMargin.csproj", "{C15332BB-CC7E-4E69-A6F1-0E114AFAFFF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsPendingChangesMargin.VS2022", "TfsPendingChangesMargin.VS2022\TfsPendingChangesMargin.VS2022.csproj", "{EC47BEC7-F2B9-48FE-8792-FEFEBDD13405}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|arm64 = Debug|arm64
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|arm64 = Release|arm64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{C15332BB-CC7E-4E69-A6F1-0E114AFAFFF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C15332BB-CC7E-4E69-A6F1-0E114AFAFFF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C15332BB-CC7E-4E69-A6F1-0E114AFAFFF9}.Debug|arm64.ActiveCfg = Debug|arm64
+		{C15332BB-CC7E-4E69-A6F1-0E114AFAFFF9}.Debug|arm64.Build.0 = Debug|arm64
+		{C15332BB-CC7E-4E69-A6F1-0E114AFAFFF9}.Debug|x86.ActiveCfg = Debug|x86
+		{C15332BB-CC7E-4E69-A6F1-0E114AFAFFF9}.Debug|x86.Build.0 = Debug|x86
 		{C15332BB-CC7E-4E69-A6F1-0E114AFAFFF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C15332BB-CC7E-4E69-A6F1-0E114AFAFFF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C15332BB-CC7E-4E69-A6F1-0E114AFAFFF9}.Release|arm64.ActiveCfg = Release|arm64
+		{C15332BB-CC7E-4E69-A6F1-0E114AFAFFF9}.Release|arm64.Build.0 = Release|arm64
+		{C15332BB-CC7E-4E69-A6F1-0E114AFAFFF9}.Release|x86.ActiveCfg = Release|x86
+		{C15332BB-CC7E-4E69-A6F1-0E114AFAFFF9}.Release|x86.Build.0 = Release|x86
+		{EC47BEC7-F2B9-48FE-8792-FEFEBDD13405}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC47BEC7-F2B9-48FE-8792-FEFEBDD13405}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC47BEC7-F2B9-48FE-8792-FEFEBDD13405}.Debug|arm64.ActiveCfg = Debug|arm64
+		{EC47BEC7-F2B9-48FE-8792-FEFEBDD13405}.Debug|arm64.Build.0 = Debug|arm64
+		{EC47BEC7-F2B9-48FE-8792-FEFEBDD13405}.Debug|x86.ActiveCfg = Debug|x86
+		{EC47BEC7-F2B9-48FE-8792-FEFEBDD13405}.Debug|x86.Build.0 = Debug|x86
+		{EC47BEC7-F2B9-48FE-8792-FEFEBDD13405}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC47BEC7-F2B9-48FE-8792-FEFEBDD13405}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC47BEC7-F2B9-48FE-8792-FEFEBDD13405}.Release|arm64.ActiveCfg = Release|arm64
+		{EC47BEC7-F2B9-48FE-8792-FEFEBDD13405}.Release|arm64.Build.0 = Release|arm64
+		{EC47BEC7-F2B9-48FE-8792-FEFEBDD13405}.Release|x86.ActiveCfg = Release|x86
+		{EC47BEC7-F2B9-48FE-8792-FEFEBDD13405}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

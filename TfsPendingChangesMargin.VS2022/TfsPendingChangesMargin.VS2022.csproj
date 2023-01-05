@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>17.0</MinimumVisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{EC47BEC7-F2B9-48FE-8792-FEFEBDD13405}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AlekseyNagovitsyn.TfsPendingChangesMargin</RootNamespace>
+    <AssemblyName>TfsPendingChangesMargin</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
+    <UseCodebase>true</UseCodebase>
+    <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
+    <StartAction>Program</StartAction>
+    <StartProgram Condition="'$(DevEnvDir)' != ''">$(DevEnvDir)devenv.exe</StartProgram>
+    <StartArguments>/rootsuffix Exp</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Source\DiffChange.cs">
+      <Link>DiffChange.cs</Link>
+    </Compile>
+    <Compile Include="..\Source\DiffLineEntry.cs">
+      <Link>DiffLineEntry.cs</Link>
+    </Compile>
+    <Compile Include="..\Source\DiffLinesCollection.cs">
+      <Link>DiffLinesCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\Source\EditorMargin.cs">
+      <Link>EditorMargin.cs</Link>
+    </Compile>
+    <Compile Include="..\Source\EditorMarginFactory.cs">
+      <Link>EditorMarginFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Source\ExceptionThrownEventArgs.cs">
+      <Link>ExceptionThrownEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Source\MarginCore.cs">
+      <Link>MarginCore.cs</Link>
+    </Compile>
+    <Compile Include="..\Source\MarginCoreFactory.cs">
+      <Link>MarginCoreFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Source\MarginDrawReason.cs">
+      <Link>MarginDrawReason.cs</Link>
+    </Compile>
+    <Compile Include="..\Source\MarginRedrawEventArgs.cs">
+      <Link>MarginRedrawEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Source\Properties\Resources.Designer.cs">
+      <Link>Properties\Resources.Designer.cs</Link>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="..\Source\ScrollbarMargin.cs">
+      <Link>ScrollbarMargin.cs</Link>
+    </Compile>
+    <Compile Include="..\Source\ScrollbarMarginFactory.cs">
+      <Link>ScrollbarMarginFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Source\Settings\AddedLineMarginFormatDefinition.cs">
+      <Link>Settings\AddedLineMarginFormatDefinition.cs</Link>
+    </Compile>
+    <Compile Include="..\Source\Settings\EditorFormatMapExtensions.cs">
+      <Link>Settings\EditorFormatMapExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Source\Settings\GeneralSettingsPage.cs">
+      <Link>Settings\GeneralSettingsPage.cs</Link>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="..\Source\Settings\MarginSettings.cs">
+      <Link>Settings\MarginSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\Source\Settings\ModifiedLineMarginFormatDefinition.cs">
+      <Link>Settings\ModifiedLineMarginFormatDefinition.cs</Link>
+    </Compile>
+    <Compile Include="..\Source\Settings\RemovedLineMarginFormatDefinition.cs">
+      <Link>Settings\RemovedLineMarginFormatDefinition.cs</Link>
+    </Compile>
+    <Compile Include="..\Source\TfsPendingChangesMarginPackage.cs">
+      <Link>TfsPendingChangesMarginPackage.cs</Link>
+    </Compile>
+    <Compile Include="..\Source\VersionControlItemNotFoundException.cs">
+      <Link>VersionControlItemNotFoundException.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TfsPendingChangesMargin.VS2022Package.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\Source\Resources\notes.rtf">
+      <Link>Resources\notes.rtf</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <None Include="App.config" />
+    <None Include="source.extension.vsixmanifest">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.TeamFoundation, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\TeamFoundation\Team Explorer\Microsoft.VisualStudio.TeamFoundation.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.TeamFoundationServer.ExtendedClient">
+      <Version>16.170.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.32112.339" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.VisualStudio.Services.Client">
+      <Version>16.170.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Services.InteractiveClient">
+      <Version>16.170.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.4.2119" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\Source\Properties\Resources.resx">
+      <Link>Properties\Resources.resx</Link>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\Source\VSPackage.resx">
+      <Link>VSPackage.resx</Link>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\Source\Resources\Icon.ico">
+      <Link>Resources\Icon.ico</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\Source\Resources\license.txt">
+      <Link>Resources\license.txt</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\Source\Resources\PreviewImage.png">
+      <Link>Resources\PreviewImage.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
