@@ -2,7 +2,7 @@ TfsPendingChangesMargin
 =======================
 
 A Visual Studio extension to display TFS Pending Changes on the margin of the current file.
-<br/>You can grab the extension from [the Visual Studio Gallery](https://marketplace.visualstudio.com/items?itemName=StephenMcDaniel.TfsPendingChangesMargin-VS2022, "TfsPendingChangesMargin on the Visual Studio Gallery").
+<br/>You can grab the extension from [the Visual Studio Gallery](https://marketplace.visualstudio.com/items?itemName=StephenMcDaniel.TfsPendingChangesMargin-VS2022  "TfsPendingChangesMargin on the Visual Studio Gallery").
 
 ![Screenshot](/Screenshots/screenshot1.png)
 
